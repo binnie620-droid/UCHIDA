@@ -110,8 +110,10 @@ def main():
     # 신호 계산
     df = load_all(start=DATES.train_start, use_cache=False)
     features_raw = build_features(df)
-    SIGS = ["cpi_z", "credit_spread", "t10y2y", "vix", "dist_ma200_QQQ"]
-    available = [c for c in SIGS if c in features_raw.columns]
+    # CPI는 발표 지연(45일 shift)으로 최근 NaN 발생 → dropna 대상에서 제외
+    # 가격 기반 신호(vix, dist_ma200, t10y2y)만 필수 조건으로 사용
+    SIGS_REQUIRED = ["vix", "dist_ma200_QQQ", "t10y2y"]
+    available = [c for c in SIGS_REQUIRED if c in features_raw.columns]
     features = features_raw.dropna(subset=available)
 
     cfg = BaselineConfig()
