@@ -533,7 +533,6 @@ function switchTab(name) {
   document.querySelectorAll('#page-uchida .tab-content').forEach(c => {
     c.classList.toggle('active', c.id === 'tab-' + name);
   });
-  if (name === 'setup') initSetup();
 }
 
 // ============================================================
@@ -993,8 +992,6 @@ function clearSekinoAll() {
 // ============================================================
 // 초기화
 // ============================================================
-loadSignals();
-
 loadSekinoStatus();
 </script>
 </body>
