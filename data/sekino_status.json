@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-18",
-  "updated": "2026-05-18 23:22",
+  "date": "2026-05-19",
+  "updated": "2026-05-19 08:30",
   "uchida_phase": "ATTACK",
   "multiplier": 1.0,
   "weights": {
@@ -13,39 +13,24 @@
     {
       "sector": "banking",
       "direction": -1,
-      "reason": "미국채 금리 5% 돌파로 금융시장 변동성 확대"
+      "reason": "미 국채금리 5% 돌파로 금융시장 불안 확대"
     },
     {
       "sector": "automotive",
       "direction": -1,
-      "reason": "중국 차업체의 유럽 진출 가속화로 경쟁 심화"
+      "reason": "중국 업체들의 유럽 시장 공격적 진출로 경쟁 심화"
     }
   ],
   "news": [
     {
       "sector": "banking",
-      "title": "美국채금리 5% 넘어 금융위기때 수준…증시 요동-환율 1500원 웃돌아",
+      "title": "금융위기 수준까지 뛴 美 국채 금리… “증시 최대 복병 떠올라”",
       "magnitude": 4
     },
     {
       "sector": "automotive",
-      "title": "자본력 앞세운 중국 車업체들, 유럽 내 ‘공장 쇼핑’ 나서나",
+      "title": "유럽 車공장 쇼핑 나서는 中업체들",
       "magnitude": 4
-    },
-    {
-      "sector": "banking",
-      "title": "월가 채권왕 “올해 금리인하 사실상 불가능…4%대 CPI 보게될것”",
-      "magnitude": 4
-    },
-    {
-      "sector": "energy_chem",
-      "title": "주유소 기름값 2000원대 유지…정유업계 “최고가격제 부담 누적”",
-      "magnitude": 3
-    },
-    {
-      "sector": "automotive",
-      "title": "HD현대사이트솔루션, 알제리 정부와 370억 규모 지게차 공급계약",
-      "magnitude": 3
     }
   ],
   "prices": {
