@@ -1,6 +1,6 @@
 {
   "date": "2026-05-18",
-  "updated": "2026-05-18 16:05",
+  "updated": "2026-05-18 23:22",
   "uchida_phase": "ATTACK",
   "multiplier": 1.0,
   "weights": {
@@ -9,8 +9,29 @@
   },
   "cash": 0.0,
   "war_event": false,
-  "sector_events": [],
+  "sector_events": [
+    {
+      "sector": "banking",
+      "direction": -1,
+      "reason": "미국채 금리 5% 돌파로 금융시장 변동성 확대"
+    },
+    {
+      "sector": "automotive",
+      "direction": -1,
+      "reason": "중국 차업체의 유럽 진출 가속화로 경쟁 심화"
+    }
+  ],
   "news": [
+    {
+      "sector": "banking",
+      "title": "美국채금리 5% 넘어 금융위기때 수준…증시 요동-환율 1500원 웃돌아",
+      "magnitude": 4
+    },
+    {
+      "sector": "automotive",
+      "title": "자본력 앞세운 중국 車업체들, 유럽 내 ‘공장 쇼핑’ 나서나",
+      "magnitude": 4
+    },
     {
       "sector": "banking",
       "title": "월가 채권왕 “올해 금리인하 사실상 불가능…4%대 CPI 보게될것”",
