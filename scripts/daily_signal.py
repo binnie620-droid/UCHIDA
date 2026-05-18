@@ -108,7 +108,7 @@ def main():
     print(f"[{datetime.now(KST).strftime('%Y-%m-%d %H:%M')} KST] 신호 계산 시작")
 
     # 신호 계산
-    df = load_all(start=DATES.train_start, use_cache=True)
+    df = load_all(start=DATES.train_start, use_cache=False)
     features_raw = build_features(df)
     SIGS = ["cpi_z", "credit_spread", "t10y2y", "vix", "dist_ma200_QQQ"]
     available = [c for c in SIGS if c in features_raw.columns]
