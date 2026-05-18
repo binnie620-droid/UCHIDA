@@ -2,8 +2,8 @@ name: UCHIDA Daily Signal
 
 on:
   schedule:
-    - cron: '30 7 * * 1-5'   # UTC 07:30 = KST 16:30, 월~금
-  workflow_dispatch:           # 수동 실행 버튼 (테스트용)
+    - cron: '30 23 * * 0-4'   # UTC 23:30 = KST 08:30 (월~금)
+  workflow_dispatch:
 
 jobs:
   daily:
