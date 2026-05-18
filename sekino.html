@@ -962,11 +962,11 @@ function loadSekinoHoldings() {
 // ── 탭 전환 ────────────────────────────────────────────────
 function switchSekinoTab(name) {
   const names = ['portfolio', 'deposit'];
-  document.querySelectorAll('#page-sekino .tab').forEach((t, i) => {
+  document.querySelectorAll('.tab').forEach((t, i) => {
     t.classList.remove('active');
     if (names[i] === name) t.classList.add('active');
   });
-  document.querySelectorAll('#page-sekino .tab-content').forEach(el => {
+  document.querySelectorAll('.tab-content').forEach(el => {
     el.classList.toggle('active', el.id === 's-tab-' + name);
   });
   if (name === 'deposit') {
