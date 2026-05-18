@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEKINO V1</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --text: #e8e8f0;
+    --muted: #5a5a7a;
+    --attack: #00e5a0;
+    --caution: #f5c842;
+    --defense: #ff9500;
+    --crisis: #ff4466;
+    --accent: #6c63ff;
+    --sekino: #e040fb;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+  .container { max-width: 480px; margin: 0 auto; padding: 24px 16px 80px; position: relative; z-index: 1; }
+
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .logo { font-size: 11px; font-weight: 700; letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; }
+  .logo span { color: var(--sekino); }
+  .back-link { font-size: 11px; color: var(--muted); text-decoration: none; font-family: var(--mono); }
+  .back-link:hover { color: var(--accent); }
+  .date-info { text-align: right; font-family: var(--mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  .regime-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .regime-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--regime-color, var(--muted)); }
+  .regime-label { font-size: 10px; font-weight: 700; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .regime-name { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .regime-score { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+
+  .asset-row { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .asset-row:last-child { border-bottom: none; }
+  .asset-detail { display: flex; flex-direction: column; gap: 2px; }
+  .asset-shares { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .asset-value { font-family: var(--mono); font-size: 13px; text-align: right; }
+  .asset-weight { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; min-width: 40px; }
+  .asset-weight.over { color: var(--crisis); }
+  .asset-weight.under { color: var(--defense); }
+  .pnl-positive { color: var(--attack); }
+  .pnl-negative { color: var(--crisis); }
+
+  .total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; margin-top: 4px; border-top: 1px solid var(--border); }
+  .total-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.1em; }
+  .total-value { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+
+  .form-group { margin-bottom: 12px; }
+  .form-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: var(--mono); font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--sekino); }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .btn { width: 100%; padding: 13px; border-radius: 8px; border: none; font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+  .btn-sekino { background: var(--sekino); color: white; }
+  .btn-sekino:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--sekino); color: var(--sekino); }
+
+  .action-box { background: rgba(224,64,251,0.08); border: 1px solid rgba(224,64,251,0.3); border-radius: 8px; padding: 14px; margin-top: 12px; }
+  .action-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--sekino); text-transform: uppercase; margin-bottom: 10px; }
+  .action-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(224,64,251,0.15); font-family: var(--mono); font-size: 13px; }
+  .action-row:last-child { border-bottom: none; }
+  .action-buy { color: var(--attack); }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+  .tab { flex: 1; padding: 8px; border-radius: 7px; border: none; background: transparent; color: var(--muted); font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; }
+  .tab.active { background: var(--sekino); color: white; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .event-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(224,64,251,0.1); border: 1px solid rgba(224,64,251,0.3); border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: 700; color: var(--sekino); letter-spacing: 0.05em; margin-right: 6px; margin-bottom: 6px; }
+
+  .loading { text-align: center; padding: 40px; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div>
+      <div class="logo">SEKINO <span>V1</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)" id="s-last-updated">—</div>
+    </div>
+    <div style="text-align:right">
+      <div class="date-info" id="s-date-info">—</div>
+      <a href="index.html" class="back-link" style="display:block;margin-top:4px">← UCHIDA</a>
+    </div>
+  </div>
+
+  <!-- UCHIDA 국면 카드 -->
+  <div class="regime-card" id="s-regime-card" style="--regime-color: var(--sekino)">
+    <div class="regime-label">UCHIDA 국면 / 세키노 승수</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+      <div class="regime-name" id="s-phase-name" style="color:var(--sekino)">—</div>
+      <div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--sekino)" id="s-multiplier">—</div>
+    </div>
+    <div class="regime-score" id="s-phase-detail">—</div>
+  </div>
+
+  <!-- 이벤트 뱃지 -->
+  <div id="s-events-wrap" style="margin-bottom:16px;display:none">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-bottom:8px">이벤트</div>
+    <div id="s-events-list"></div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchSekinoTab('portfolio')">포트폴리오</button>
+    <button class="tab" onclick="switchSekinoTab('deposit')">리밸런싱</button>
+  </div>
+
+  <!-- 포트폴리오 탭 -->
+  <div class="tab-content active" id="s-tab-portfolio">
+    <div class="section">
+      <div class="section-title">보유 현황</div>
+      <div id="s-holdings-list"><div class="loading">리밸런싱 탭에서 초기 매수를 입력하세요</div></div>
+      <div class="total-row">
+        <span class="total-label">총 평가액</span>
+        <span class="total-value" id="s-total-value">—</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">목표 비중 vs 현재 비중</div>
+      <div id="s-weight-compare"><div class="loading">데이터 로딩 중</div></div>
+    </div>
+    <div class="section" id="s-news-section" style="display:none">
+      <div class="section-title">금일 주요 뉴스</div>
+      <div id="s-news-list"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">매매 로그</div>
+      <div id="s-trade-log"><div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">기록 없음</div></div>
+    </div>
+  </div>
+
+  <!-- 리밸런싱 탭 -->
+  <div class="tab-content" id="s-tab-deposit">
+    <div class="section">
+      <div class="section-title">리밸런싱 계산</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">총 운용 금액</div>
+          <div style="font-family:var(--mono);font-size:14px;font-weight:500" id="s-rebal-total">—</div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">0원 = 리밸런싱만</div>
+          <div style="font-size:11px;color:var(--muted)">금액 입력 시 추가 매수</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">추가 납입 금액 (원, 없으면 0)</label>
+        <input class="form-input" type="number" id="s-deposit-amount" placeholder="0" step="100000" value="0">
+      </div>
+      <button class="btn btn-sekino" onclick="calcSekinoRebalance()">리밸런싱 계산</button>
+      <div id="s-deposit-result"></div>
+    </div>
+    <div class="section" id="s-rebal-update-section" style="display:none">
+      <div class="section-title">실매매가 입력 후 저장</div>
+      <div id="s-update-inputs"></div>
+      <button class="btn btn-sekino" onclick="saveSekinoAfterRebalance()">저장 → 로그 기록</button>
+    </div>
+    <div class="section">
+      <div class="section-title">포트폴리오 초기화</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">보유 정보 및 매매 로그를 모두 삭제합니다</div>
+      <button class="btn btn-ghost" onclick="clearSekinoAll()" style="color:var(--crisis);border-color:var(--crisis)">전체 초기화</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// SEKINO 상수
+// ============================================================
+const SEKINO_SECTORS = ['semiconductor','battery','energy_chem','biotech','banking','automotive','defense'];
+const SEKINO_KO = {
+  semiconductor: '반도체', battery: '2차전지', energy_chem: '에너지화학',
+  biotech: '바이오', banking: '은행', automotive: '자동차', defense: '방산'
+};
+const SEKINO_ETF = {
+  semiconductor: '396500', battery: '305540', energy_chem: '117460',
+  biotech: '244580', banking: '091220', automotive: '091180', defense: '463250'
+};
+const SEKINO_ETF_NAME = {
+  semiconductor: 'TIGER 반도체TOP10',
+  battery:       'TIGER 2차전지테마',
+  energy_chem:   'KODEX 에너지화학',
+  biotech:       'TIGER 코스닥150바이오',
+  banking:       'TIGER 은행',
+  automotive:    'KODEX 자동차',
+  defense:       'TIGER K방산우주',
+};
+const UCHIDA_MULTIPLIER = { ATTACK: 1.0, CAUTION: 0.67, DEFENSE: 0.33, CRISIS: 0.0 };
+const SEKINO_STORAGE = 'sekino_holdings';
+const SEKINO_STATUS_URL = 'data/sekino_status.json';
+
+// ============================================================
+// 시스템 전환
+// ============================================================
+let currentSystem = 'uchida';
+
+function switchSystem(sys) {
+  currentSystem = sys;
+  document.getElementById('page-uchida').classList.toggle('active', sys === 'uchida');
+  document.getElementById('page-sekino').classList.toggle('active', sys === 'sekino');
+  document.getElementById('btn-uchida').className = 'sys-btn' + (sys === 'uchida' ? ' active-uchida' : '');
+  document.getElementById('btn-sekino').className = 'sys-btn' + (sys === 'sekino' ? ' active-sekino' : '');
+  if (sys === 'sekino') loadSekinoStatus();
+}
+
+// ============================================================
+// UCHIDA 로직 (기존 그대로)
+// ============================================================
+const fmt = n => n?.toLocaleString('ko-KR') + '원';
+const fmtPct = n => (n >= 0 ? '+' : '') + (n * 100).toFixed(1) + '%';
+
+function loadHoldings() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveHoldingsData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+let signalData = null;
+
+async function loadSignals() {
+  try {
+    const res = await fetch(SIGNALS_URL + '?t=' + Date.now());
+    signalData = await res.json();
+    renderSignals(signalData);
+  } catch (e) {
+    signalData = {
+      date: new Date().toISOString().slice(0, 10),
+      regime: 'ATTACK', score: 0.00,
+      signals: {
+        cpi_z:         { value: 0.90, threshold: 2.3,   op: '>', triggered: false, label: 'CPI Z-score' },
+        credit_spread: { value: 1.66, threshold: 3.5,   op: '>', triggered: false, label: '신용스프레드' },
+        t10y2y:        { value: 0.48, threshold: 0.0,   op: '<', triggered: false, label: '10Y-2Y' },
+        vix:           { value: 17.26,threshold: 22.0,  op: '>', triggered: false, label: 'VIX' },
+        dist_ma200:    { value: 0.1817,threshold: -0.03, op: '<', triggered: false, label: 'QQQ MA200' },
+      },
+      prices: { QQQ: 0, SCHD: 0, GLD: 0, IEF: 0 },
+    };
+    renderSignals(signalData);
+    document.getElementById('last-updated').textContent = '신호 파일 없음 (데모 모드)';
+  }
+}
+
+function renderSignals(data) {
+  const now = new Date();
+  document.getElementById('date-info').innerHTML =
+    now.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) +
+    '<br>' + now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('last-updated').textContent = '기준: ' + data.date;
+
+  const color = REGIME_COLORS[data.regime] || '#5a5a7a';
+  const card = document.getElementById('regime-card');
+  card.style.setProperty('--regime-color', color);
+  document.getElementById('regime-name').textContent = data.regime;
+
+  const scoreVal = data.score || 0;
+  const markerPct = Math.min(96, Math.max(2, (scoreVal / 3.5) * 100));
+  const marker = document.getElementById('score-marker');
+  marker.style.left = markerPct + '%';
+  marker.style.color = color;
+
+  const scoreText = data.regime === 'CAUTION'
+    ? `점수 ${scoreVal.toFixed(2)} | 🟡 RSI 과열 필터 발동`
+    : `점수 ${scoreVal.toFixed(2)}`;
+  document.getElementById('regime-score').textContent = scoreText;
+
+  const rsiStatus = document.getElementById('rsi-status');
+  if (data.caution) {
+    const rsi = data.caution.rsi || 0;
+    const maDist = data.caution.ma_dist || 0;
+    const rsiThr = data.caution.rsi_threshold || 75;
+    const maThr  = data.caution.ma_threshold || 15;
+    if (data.caution.active) {
+      rsiStatus.innerHTML = `RSI <span style="color:var(--caution)">${rsi.toFixed(1)}</span> · MA200 <span style="color:var(--caution)">+${maDist.toFixed(1)}%</span> · QQQ 75%→<span style="color:var(--caution)">50%</span>`;
+    } else {
+      const rsiOk = rsi > rsiThr, maOk = maDist > maThr;
+      let hint = '';
+      if (!rsiOk && !maOk) hint = `RSI ${rsi.toFixed(1)} (↑${(rsiThr-rsi).toFixed(1)} → CAUTION) · MA200 +${maDist.toFixed(1)}%`;
+      else if (!rsiOk) hint = `RSI <span style="color:var(--caution)">${rsi.toFixed(1)}</span> (↑${(rsiThr-rsi).toFixed(1)} 더 오르면 CAUTION) · MA200 +${maDist.toFixed(1)}% ✓`;
+      else if (!maOk) hint = `RSI <span style="color:var(--caution)">${rsi.toFixed(1)}</span> ✓ · MA200 +${maDist.toFixed(1)}% (↑${(maThr-maDist).toFixed(1)}% 더 오르면 CAUTION)`;
+      rsiStatus.innerHTML = hint;
+    }
+  } else { rsiStatus.textContent = ''; }
+
+  const cautionBox = document.getElementById('caution-box');
+  if (data.caution && data.caution.active) {
+    const rsi = data.caution.rsi || 0, maDist = data.caution.ma_dist || 0;
+    cautionBox.style.display = 'block';
+    cautionBox.innerHTML = `
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--caution);margin-bottom:8px">⚠ RSI 과열 필터 발동 — QQQ 75% → 50%</div>
+      <div style="display:flex;gap:12px;font-family:var(--mono);font-size:11px">
+        <div>RSI(14): <span style="color:var(--caution);font-weight:600">${rsi.toFixed(1)}</span> / 75.0</div>
+        <div>MA200: <span style="color:var(--caution);font-weight:600">+${maDist.toFixed(1)}%</span> / +15%</div>
+      </div>
+      <div style="margin-top:8px;height:4px;background:var(--border);border-radius:2px">
+        <div style="height:100%;width:${Math.min(100,(rsi/100)*100)}%;background:var(--caution);border-radius:2px"></div>
+      </div>`;
+  } else { cautionBox.style.display = 'none'; }
+
+  const grid = document.getElementById('signals-grid');
+  grid.innerHTML = '';
+  Object.values(data.signals).forEach(sig => {
+    const on = sig.triggered;
+    const valStr = sig.label === 'QQQ MA200'
+      ? (sig.value >= 0 ? '+' : '') + (sig.value * 100).toFixed(1) + '%'
+      : sig.value.toFixed(2);
+    grid.innerHTML += `
+      <div class="signal-item ${on ? 'on' : ''}">
+        <div>
+          <div class="signal-name">${sig.label}</div>
+          <div class="signal-val">${valStr}</div>
+        </div>
+        <div class="signal-dot"></div>
+      </div>`;
+  });
+
+  renderPortfolio(data);
+}
+
+function renderPortfolio(data) {
+  const holdings = loadHoldings();
+  const prices   = data?.prices || {};
+  const target   = WEIGHT_MAP[data?.regime || 'ATTACK'];
+
+  if (!Object.keys(holdings).length) {
+    document.getElementById('holdings-list').innerHTML = '<div class="loading">설정 탭에서 보유 정보를 입력하세요</div>';
+    document.getElementById('weight-compare').innerHTML = '';
+    return;
+  }
+
+  let totalValue = 0, totalCost = 0;
+  ASSETS.forEach(a => {
+    const h = holdings[a];
+    if (!h) return;
+    totalValue += (prices[a] || h.avg_price) * h.shares;
+    totalCost  += h.avg_price * h.shares;
+  });
+
+  let html = '';
+  ASSETS.forEach(a => {
+    const h = holdings[a];
+    if (!h || !h.shares) return;
+    const price = prices[a] || h.avg_price;
+    const val   = price * h.shares;
+    const pnl   = val - h.avg_price * h.shares;
+    const pnlPct = pnl / (h.avg_price * h.shares);
+    const curW  = totalValue > 0 ? val / totalValue : 0;
+    const tgtW  = target[a] || 0;
+    const diff  = curW - tgtW;
+    const wClass = Math.abs(diff) > BAND ? (diff > 0 ? 'over' : 'under') : '';
+    html += `
+      <div class="asset-row">
+        <span class="asset-ticker">${a}</span>
+        <div class="asset-detail">
+          <span style="font-size:13px">${h.shares}주</span>
+          <span class="asset-shares">@${h.avg_price.toLocaleString()}</span>
+        </div>
+        <div class="asset-value ${pnl >= 0 ? 'pnl-positive' : 'pnl-negative'}">
+          ${(val/10000).toFixed(0)}만<br>
+          <span style="font-size:10px">${fmtPct(pnlPct)}</span>
+        </div>
+        <div class="asset-weight ${wClass}">${(curW*100).toFixed(0)}%<br>
+          <span style="font-size:10px">${diff >= 0 ? '+' : ''}${(diff*100).toFixed(1)}p</span>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('holdings-list').innerHTML = html;
+  document.getElementById('total-value').textContent = fmt(Math.round(totalValue));
+  const totalPnl = totalValue - totalCost;
+  document.getElementById('total-value').className = 'total-value ' + (totalPnl >= 0 ? 'pnl-positive' : 'pnl-negative');
+
+  let wHtml = '';
+  let hasExceeded = false;
+  ASSETS.forEach(a => {
+    const h = holdings[a];
+    const price = prices[a] || (h?.avg_price || 0);
+    const val   = (h?.shares || 0) * price;
+    const curW  = totalValue > 0 ? val / totalValue : 0;
+    const tgtW  = target[a] || 0;
+    const diff  = curW - tgtW;
+    const exceeded = Math.abs(diff) > BAND;
+    if (exceeded) hasExceeded = true;
+    const barW = Math.min(100, curW * 100 / 0.8);
+    const tgtBarW = Math.min(100, tgtW * 100 / 0.8);
+    wHtml += `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-family:var(--mono);font-size:12px;color:var(--accent)">${a}</span>
+          <span style="font-family:var(--mono);font-size:11px;color:${exceeded?'var(--crisis)':'var(--muted)'}">
+            ${(curW*100).toFixed(1)}% / ${(tgtW*100).toFixed(0)}% (${diff>=0?'+':''}${(diff*100).toFixed(1)}p)
+          </span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;position:relative">
+          <div style="height:100%;width:${barW}%;background:var(--accent);border-radius:2px;opacity:0.6"></div>
+          <div style="position:absolute;top:0;height:100%;left:${tgtBarW}%;width:2px;background:var(--text);opacity:0.4"></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('weight-compare').innerHTML = wHtml;
+  if (hasExceeded) document.getElementById('alert-band').classList.add('show');
+}
+
+function calcDeposit() {
+  const amount = parseInt(document.getElementById('deposit-amount').value);
+  if (!amount || amount <= 0) { alert('금액을 입력하세요'); return; }
+  const holdings = loadHoldings();
+  const prices   = signalData?.prices || {};
+  const regime   = signalData?.regime || 'ATTACK';
+  const target   = WEIGHT_MAP[regime];
+  let totalValue = amount;
+  ASSETS.forEach(a => { const h = holdings[a]; if (h?.shares) totalValue += (prices[a] || h.avg_price) * h.shares; });
+  let html = '<div class="action-box"><div class="action-title">매수 지시</div>';
+  let totalBuy = 0;
+  let updateHtml = '';
+  ASSETS.forEach(a => {
+    const tgtW  = target[a] || 0;
+    const tgtVal = totalValue * tgtW;
+    const h = holdings[a];
+    const price = prices[a] || h?.avg_price || 1;
+    const curVal = (h?.shares || 0) * price;
+    const buyVal = tgtVal - curVal;
+    const buyShares = Math.max(0, Math.floor(buyVal / price));
+    const buyCost = buyShares * price;
+    totalBuy += buyCost;
+    if (buyShares > 0) {
+      html += `<div class="action-row"><span class="action-buy">${NAMES[a]}</span><span class="action-buy">+${buyShares}주 ${(buyCost/10000).toFixed(0)}만</span></div>`;
+      updateHtml += `
+        <div style="margin-bottom:12px">
+          <label class="form-label">${NAMES[a]} 실매수가 / 수량</label>
+          <div class="input-row">
+            <input class="form-input" type="number" id="buy-price-${a}" placeholder="${price.toFixed(0)}" value="${price.toFixed(0)}">
+            <input class="form-input" type="number" id="buy-shares-${a}" placeholder="${buyShares}" value="${buyShares}">
+          </div>
+        </div>`;
+    } else {
+      html += `<div class="action-row"><span style="color:var(--muted)">${a}</span><span class="action-hold">유지</span></div>`;
+    }
+  });
+  const remaining = amount - totalBuy;
+  html += `<div class="action-row" style="margin-top:8px;border-top:1px solid rgba(108,99,255,0.3);padding-top:8px"><span style="color:var(--muted);font-size:11px">잔여</span><span style="font-family:var(--mono);font-size:12px">${fmt(Math.round(remaining))}</span></div></div>`;
+  document.getElementById('deposit-result').innerHTML = html;
+  document.getElementById('update-inputs').innerHTML = updateHtml || '<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">매수 항목 없음</div>';
+}
+
+function saveAfterBuy() {
+  const holdings = loadHoldings();
+  ASSETS.forEach(a => {
+    const priceEl  = document.getElementById(`buy-price-${a}`);
+    const sharesEl = document.getElementById(`buy-shares-${a}`);
+    if (!priceEl || !sharesEl) return;
+    const newPrice  = parseFloat(priceEl.value);
+    const newShares = parseInt(sharesEl.value);
+    if (!newPrice || !newShares || newShares <= 0) return;
+    const cur = holdings[a] || { avg_price: 0, shares: 0 };
+    const totalShares = cur.shares + newShares;
+    const avgPrice = totalShares > 0 ? (cur.avg_price * cur.shares + newPrice * newShares) / totalShares : newPrice;
+    holdings[a] = { avg_price: Math.round(avgPrice), shares: totalShares, code: CODES[a] };
+  });
+  saveHoldingsData(holdings);
+  renderPortfolio(signalData);
+  switchTab('portfolio');
+  alert('저장 완료');
+}
+
+function initSetup() {
+  const holdings = loadHoldings();
+  let html = '';
+  ASSETS.forEach(a => {
+    const h = holdings[a] || {};
+    html += `
+      <div style="margin-bottom:16px">
+        <label class="form-label">${NAMES[a]}</label>
+        <div class="input-row">
+          <input class="form-input" type="number" id="setup-price-${a}" placeholder="평단 (원)" value="${h.avg_price || ''}">
+          <input class="form-input" type="number" id="setup-shares-${a}" placeholder="수량 (주)" value="${h.shares || ''}">
+        </div>
+      </div>`;
+  });
+  document.getElementById('setup-inputs').innerHTML = html;
+}
+
+function saveHoldings() {
+  const holdings = {};
+  ASSETS.forEach(a => {
+    const price  = parseFloat(document.getElementById(`setup-price-${a}`)?.value);
+    const shares = parseInt(document.getElementById(`setup-shares-${a}`)?.value);
+    if (price > 0 && shares > 0) holdings[a] = { avg_price: Math.round(price), shares, code: CODES[a] };
+  });
+  saveHoldingsData(holdings);
+  renderPortfolio(signalData);
+  alert('저장 완료');
+}
+
+function clearHoldings() {
+  if (confirm('모든 보유 정보를 초기화하시겠습니까?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    initSetup();
+    renderPortfolio(signalData);
+  }
+}
+
+function switchTab(name) {
+  const names = ['portfolio', 'deposit', 'setup'];
+  document.querySelectorAll('#page-uchida .tab').forEach((t, i) => {
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('#page-uchida .tab-content').forEach(c => {
+    c.classList.toggle('active', c.id === 'tab-' + name);
+  });
+  if (name === 'setup') initSetup();
+}
+
+// ============================================================
+// SEKINO 로직
+// ============================================================
+let sekinoData = null;
+const SEKINO_TRADE_LOG_KEY = 'sekino_trade_log';
+
+async function loadSekinoStatus() {
+  try {
+    const res = await fetch(SEKINO_STATUS_URL + '?t=' + Date.now());
+    sekinoData = await res.json();
+  } catch (e) {
+    sekinoData = {
+      date: new Date().toISOString().slice(0, 10),
+      updated: new Date().toISOString().slice(0, 16).replace('T', ' '),
+      uchida_phase: 'ATTACK',
+      multiplier: 1.0,
+      weights: { semiconductor: 0.5, battery: 0.5 },
+      cash: 0.0,
+      war_event: false,
+      sector_events: [],
+      news: [],
+    };
+  }
+  renderSekinoStatus(sekinoData);
+}
+
+function renderSekinoStatus(data) {
+  if (!data) return;
+
+  // 헤더
+  document.getElementById('s-last-updated').textContent = '기준: ' + (data.date || '—');
+  const now = new Date();
+  document.getElementById('s-date-info').innerHTML =
+    now.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) +
+    '<br>' + now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+  // 국면 카드
+  const phase = data.uchida_phase || 'ATTACK';
+  const multi = data.multiplier ?? 1.0;
+  const phaseColor = { ATTACK: '#00e5a0', CAUTION: '#f5c842', DEFENSE: '#ff9500', CRISIS: '#ff4466' }[phase] || '#e040fb';
+  const card = document.getElementById('s-regime-card');
+  card.style.setProperty('--regime-color', phaseColor);
+  document.getElementById('s-phase-name').textContent = phase;
+  document.getElementById('s-phase-name').style.color = phaseColor;
+  document.getElementById('s-multiplier').textContent = (multi * 100).toFixed(0) + '%';
+  document.getElementById('s-multiplier').style.color = phaseColor;
+  document.getElementById('s-phase-detail').textContent =
+    `투자 ${(multi*100).toFixed(0)}% · 현금 ${((1-multi)*100).toFixed(0)}% · 기준 ${data.date || '—'}`;
+
+  // 이벤트 뱃지
+  const eventsWrap = document.getElementById('s-events-wrap');
+  const events = data.sector_events || [];
+  if (data.war_event || events.length > 0) {
+    eventsWrap.style.display = 'block';
+    let evHtml = '';
+    if (data.war_event) evHtml += `<span class="event-badge">🚨 전쟁</span>`;
+    events.forEach(ev => {
+      const dir = ev.direction > 0 ? '📈' : '📉';
+      evHtml += `<span class="event-badge">${dir} ${SEKINO_KO[ev.sector] || ev.sector}</span>`;
+    });
+    document.getElementById('s-events-list').innerHTML = evHtml;
+  } else {
+    eventsWrap.style.display = 'none';
+  }
+
+  // 렌더
+  renderSekinoPortfolio(data);
+  renderSekinoNews(data.news || []);
+  renderSekinoTradeLog();
+}
+
+// ── 포트폴리오 탭 ──────────────────────────────────────────
+function renderSekinoPortfolio(data) {
+  const holdings = loadSekinoHoldings();
+  const weights  = data?.weights || {};
+
+  if (!Object.keys(holdings).length) {
+    document.getElementById('s-holdings-list').innerHTML =
+      '<div class="loading">설정 탭에서 보유 정보를 입력하세요</div>';
+    document.getElementById('s-weight-compare').innerHTML = '';
+    document.getElementById('s-total-value').textContent = '—';
+    return;
+  }
+
+  // 총 평가액 (평단 × 수량)
+  let totalValue = 0;
+  SEKINO_SECTORS.forEach(s => {
+    const h = holdings[s];
+    if (h?.shares) {
+      const cp = (sekinoData?.prices || {})[s] || h.avg_price;
+      totalValue += cp * h.shares;
+    }
+  });
+
+  // 현금
+  const cash     = (data?.cash || 0);
+  const totalInput = parseFloat(localStorage.getItem('sekino_total') || '0');
+  const cashVal  = totalInput * cash;
+  if (cashVal > 0) totalValue += cashVal;
+
+  // 보유 현황
+  let html = '';
+  SEKINO_SECTORS.forEach(s => {
+    const h = holdings[s];
+    if (!h?.shares) return;
+    const curPrice = (sekinoData?.prices || {})[s] || h.avg_price;
+    const val  = curPrice * h.shares;
+    const pnl  = val - h.avg_price * h.shares;
+    const pnlPct = h.avg_price > 0 ? pnl / (h.avg_price * h.shares) : 0;
+    const curW = totalValue > 0 ? val / totalValue : 0;
+    const tgtW = weights[s] || 0;
+    const diff = curW - tgtW;
+    const wClass = Math.abs(diff) > 0.05 ? (diff > 0 ? 'over' : 'under') : '';
+    html += `
+      <div class="asset-row">
+        <span style="color:var(--sekino);font-size:10px;min-width:80px;font-family:var(--mono)">${SEKINO_ETF_NAME[s]}<br><span style="color:var(--muted);font-size:9px">${SEKINO_ETF[s]}</span></span>
+        <div class="asset-detail">
+          <span style="font-size:12px">${h.shares}주</span>
+          <span class="asset-shares">@${h.avg_price.toLocaleString()}</span>
+        </div>
+        <div class="asset-value ${pnl >= 0 ? 'pnl-positive' : 'pnl-negative'}">
+          ${(val/10000).toFixed(0)}만<br>
+          <span style="font-size:10px">${pnlPct >= 0 ? '+' : ''}${(pnlPct*100).toFixed(1)}%</span>
+        </div>
+        <div class="asset-weight ${wClass}">${(curW*100).toFixed(0)}%<br>
+          <span style="font-size:10px">${diff>=0?'+':''}${(diff*100).toFixed(1)}p</span>
+        </div>
+      </div>`;
+  });
+
+  if (cashVal > 0) {
+    html += `
+      <div class="asset-row">
+        <span class="asset-ticker" style="color:var(--muted);font-size:10px;min-width:52px">현금</span>
+        <div class="asset-detail"><span style="font-size:12px">—</span></div>
+        <div class="asset-value" style="color:var(--muted)">${(cashVal/10000).toFixed(0)}만</div>
+        <div class="asset-weight">${(cash*100).toFixed(0)}%</div>
+      </div>`;
+  }
+
+  document.getElementById('s-holdings-list').innerHTML = html || '<div class="loading">보유 정보 없음</div>';
+  document.getElementById('s-total-value').textContent = (totalValue/10000).toFixed(0) + '만원';
+  document.getElementById('s-total-value').style.color = 'var(--sekino)';
+
+  // 비중 비교 (UCHIDA 방식 그대로)
+  let wHtml = '';
+  SEKINO_SECTORS.forEach(s => {
+    const h    = holdings[s];
+    const cp   = h ? ((sekinoData?.prices || {})[s] || h.avg_price) : 0;
+    const val  = h ? cp * h.shares : 0;
+    const curW = totalValue > 0 ? val / totalValue : 0;
+    const tgtW = weights[s] || 0;
+    if (tgtW === 0 && curW === 0) return;
+    const diff    = curW - tgtW;
+    const exceeded = Math.abs(diff) > 0.05;
+    const barW    = Math.min(100, curW * 100 / 0.6);
+    const tgtBarW = Math.min(100, tgtW * 100 / 0.6);
+    wHtml += `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-family:var(--mono);font-size:12px;color:var(--sekino)">${SEKINO_KO[s]}</span>
+          <span style="font-family:var(--mono);font-size:11px;color:${exceeded?'var(--crisis)':'var(--muted)'}">
+            ${(curW*100).toFixed(1)}% / ${(tgtW*100).toFixed(0)}% (${diff>=0?'+':''}${(diff*100).toFixed(1)}p)
+          </span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;position:relative">
+          <div style="height:100%;width:${barW}%;background:var(--sekino);border-radius:2px;opacity:0.6"></div>
+          <div style="position:absolute;top:0;height:100%;left:${tgtBarW}%;width:2px;background:var(--text);opacity:0.4"></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('s-weight-compare').innerHTML = wHtml ||
+    '<div style="color:var(--muted);font-size:12px;text-align:center;padding:16px">데이터 없음</div>';
+}
+
+// ── 뉴스 ───────────────────────────────────────────────────
+function renderSekinoNews(news) {
+  const section = document.getElementById('s-news-section');
+  const list    = document.getElementById('s-news-list');
+  if (!news || news.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  const grouped = {};
+  news.forEach(n => { if (!grouped[n.sector]) grouped[n.sector] = []; grouped[n.sector].push(n); });
+
+  let html = '';
+  Object.entries(grouped).forEach(([sector, items]) => {
+    html += `<div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--sekino);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px">${SEKINO_KO[sector]||sector}</div>`;
+    items.forEach(n => {
+      html += `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;color:var(--text);flex:1;padding-right:8px;line-height:1.5">${n.title}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap">(mag${n.magnitude})</span>
+        </div>`;
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+
+// ── 매매 로그 ──────────────────────────────────────────────
+function loadTradeLog() {
+  try { return JSON.parse(localStorage.getItem(SEKINO_TRADE_LOG_KEY)) || []; } catch { return []; }
+}
+
+function saveTradeLog(log) {
+  localStorage.setItem(SEKINO_TRADE_LOG_KEY, JSON.stringify(log));
+}
+
+function renderSekinoTradeLog() {
+  const log  = loadTradeLog();
+  const el   = document.getElementById('s-trade-log');
+  if (!log.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">기록 없음</div>';
+    return;
+  }
+  let html = '';
+  [...log].reverse().slice(0, 20).forEach(entry => {
+    const dir = entry.type === 'buy' ? '📈 매수' : '📉 매도';
+    const color = entry.type === 'buy' ? 'var(--attack)' : 'var(--crisis)';
+    html += `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:12px;color:${color};font-weight:600">${dir} ${SEKINO_KO[entry.sector]||entry.sector}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted)">${entry.date} · ${entry.shares}주 @${entry.price.toLocaleString()}</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:12px;text-align:right">
+          ${(entry.shares*entry.price/10000).toFixed(0)}만원
+        </div>
+      </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ── 리밸런싱 계산 (매수 + 매도) ──────────────────────────
+function calcSekinoRebalance() {
+  const addAmount  = parseInt(document.getElementById('s-deposit-amount').value) || 0;
+  const holdings   = loadSekinoHoldings();
+  const weights    = sekinoData?.weights || {};
+  const prices     = sekinoData?.prices || {};
+  const BAND       = 0.05;
+
+  // 총 평가액
+  let curTotal = 0;
+  SEKINO_SECTORS.forEach(s => {
+    const h = holdings[s];
+    if (h?.shares) {
+      const p = prices[s] || h.avg_price;
+      curTotal += p * h.shares;
+    }
+  });
+  const newTotal = curTotal + addAmount;
+
+  document.getElementById('s-rebal-total').textContent =
+    (curTotal / 10000).toFixed(0) + '만원';
+
+  const buys = [], sells = [], holds = [];
+  let totalBuy = 0, totalSell = 0;
+  let updateHtml = '';
+
+  SEKINO_SECTORS.forEach(s => {
+    const tgtW   = weights[s] || 0;
+    const h      = holdings[s];
+    const price  = prices[s] || h?.avg_price || 0;
+    const curShares = h?.shares || 0;
+    const curVal = price * curShares;
+    const tgtVal = newTotal * tgtW;
+    const diff   = tgtVal - curVal;
+    const diffW  = newTotal > 0 ? (tgtVal - curVal) / newTotal : 0;
+
+    if (price <= 0) return;
+
+    if (tgtW === 0 && curShares === 0) return;
+
+    if (Math.abs(diffW) < BAND && addAmount === 0) {
+      if (tgtW > 0) holds.push(s);
+      return;
+    }
+
+    if (diff > 0) {
+      const n = Math.floor(diff / price);
+      if (n > 0) {
+        totalBuy += n * price;
+        buys.push({ s, n, price, cost: n * price });
+        updateHtml += `
+          <div style="margin-bottom:12px">
+            <div style="font-size:11px;color:var(--attack);font-weight:600;margin-bottom:6px">
+              매수 · ${SEKINO_KO[s]} (${SEKINO_ETF[s]})</div>
+            <div class="input-row">
+              <input class="form-input" type="number" id="s-buy-price-${s}"
+                placeholder="${Math.round(price)}" value="${Math.round(price)}">
+              <input class="form-input" type="number" id="s-buy-shares-${s}"
+                placeholder="${n}" value="${n}">
+            </div>
+          </div>`;
+      } else { holds.push(s); }
+    } else if (diff < 0) {
+      const n = Math.floor(Math.abs(diff) / price);
+      if (n > 0 && n <= curShares) {
+        totalSell += n * price;
+        sells.push({ s, n, price, cost: n * price });
+        updateHtml += `
+          <div style="margin-bottom:12px">
+            <div style="font-size:11px;color:var(--crisis);font-weight:600;margin-bottom:6px">
+              매도 · ${SEKINO_KO[s]} (${SEKINO_ETF[s]})</div>
+            <div class="input-row">
+              <input class="form-input" type="number" id="s-sell-price-${s}"
+                placeholder="${Math.round(price)}" value="${Math.round(price)}">
+              <input class="form-input" type="number" id="s-sell-shares-${s}"
+                placeholder="${n}" value="${n}">
+            </div>
+          </div>`;
+      } else { holds.push(s); }
+    }
+  });
+
+  // 결과 렌더
+  const boxColor = 'rgba(224,64,251,0.08)';
+  const borderColor = 'rgba(224,64,251,0.3)';
+  let html = `<div style="background:${boxColor};border:1px solid ${borderColor};border-radius:8px;padding:14px;margin-top:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--sekino);text-transform:uppercase;margin-bottom:10px">매매 지시</div>`;
+
+  if (buys.length === 0 && sells.length === 0) {
+    html += `<div style="color:var(--muted);font-size:13px;text-align:center;padding:12px">
+      변동 없음 (5% 밴드 이내)</div>`;
+  }
+
+  buys.forEach(({s, n, cost}) => {
+    html += `<div class="action-row">
+      <span class="action-buy">매수 · ${SEKINO_ETF_NAME[s]}</span>
+      <span class="action-buy">+${n}주 ${(cost/10000).toFixed(0)}만</span>
+    </div>`;
+  });
+
+  sells.forEach(({s, n, cost}) => {
+    html += `<div class="action-row">
+      <span style="color:var(--crisis)">매도 · ${SEKINO_ETF_NAME[s]}</span>
+      <span style="color:var(--crisis)">-${n}주 ${(cost/10000).toFixed(0)}만</span>
+    </div>`;
+  });
+
+  holds.forEach(s => {
+    html += `<div class="action-row">
+      <span style="color:var(--muted)">${SEKINO_KO[s]}</span>
+      <span style="color:var(--muted)">유지</span>
+    </div>`;
+  });
+
+  const remain = addAmount + totalSell - totalBuy;
+  if (buys.length > 0 || sells.length > 0) {
+    html += `<div class="action-row" style="margin-top:8px;border-top:1px solid ${borderColor};padding-top:8px">
+      <span style="color:var(--muted);font-size:11px">잔여</span>
+      <span style="font-family:var(--mono);font-size:12px">${(Math.max(0,remain)/10000).toFixed(1)}만원</span>
+    </div>`;
+  }
+  html += '</div>';
+
+  document.getElementById('s-deposit-result').innerHTML = html;
+
+  const updateSection = document.getElementById('s-rebal-update-section');
+  if (buys.length > 0 || sells.length > 0) {
+    document.getElementById('s-update-inputs').innerHTML = updateHtml;
+    updateSection.style.display = 'block';
+  } else {
+    updateSection.style.display = 'none';
+  }
+}
+
+// ── 리밸런싱 저장 + 로그 기록 ─────────────────────────────
+function saveSekinoAfterRebalance() {
+  const holdings = loadSekinoHoldings();
+  const log      = loadTradeLog();
+  const today    = new Date().toISOString().slice(0, 10);
+
+  // 매수 처리
+  SEKINO_SECTORS.forEach(s => {
+    const priceEl  = document.getElementById(`s-buy-price-${s}`);
+    const sharesEl = document.getElementById(`s-buy-shares-${s}`);
+    if (!priceEl || !sharesEl) return;
+    const p = parseFloat(priceEl.value);
+    const n = parseInt(sharesEl.value);
+    if (!p || !n || n <= 0) return;
+    const cur = holdings[s] || { avg_price: 0, shares: 0 };
+    const tot = cur.shares + n;
+    const avg = tot > 0 ? (cur.avg_price * cur.shares + p * n) / tot : p;
+    holdings[s] = { avg_price: Math.round(avg), shares: tot, etf: SEKINO_ETF[s] };
+    log.push({ date: today, type: 'buy', sector: s, price: Math.round(p), shares: n });
+  });
+
+  // 매도 처리
+  SEKINO_SECTORS.forEach(s => {
+    const priceEl  = document.getElementById(`s-sell-price-${s}`);
+    const sharesEl = document.getElementById(`s-sell-shares-${s}`);
+    if (!priceEl || !sharesEl) return;
+    const p = parseFloat(priceEl.value);
+    const n = parseInt(sharesEl.value);
+    if (!p || !n || n <= 0) return;
+    const cur = holdings[s] || { avg_price: 0, shares: 0 };
+    const remaining = Math.max(0, cur.shares - n);
+    if (remaining === 0) {
+      delete holdings[s];
+    } else {
+      holdings[s] = { avg_price: cur.avg_price, shares: remaining, etf: SEKINO_ETF[s] };
+    }
+    log.push({ date: today, type: 'sell', sector: s, price: Math.round(p), shares: n });
+  });
+
+  localStorage.setItem(SEKINO_STORAGE, JSON.stringify(holdings));
+  saveTradeLog(log);
+  if (sekinoData) renderSekinoStatus(sekinoData);
+  switchSekinoTab('portfolio');
+  alert('저장 완료');
+}
+
+// ── 하위 호환 (구버전 saveSekinoAfterBuy 혹시 남아있을 경우)
+function saveSekinoAfterBuy() { saveSekinoAfterRebalance(); }
+
+// ── 설정 ───────────────────────────────────────────────────
+function loadSekinoHoldings() {
+  try { return JSON.parse(localStorage.getItem(SEKINO_STORAGE)) || {}; } catch { return {}; }
+}
+
+// ── 탭 전환 ────────────────────────────────────────────────
+function switchSekinoTab(name) {
+  const names = ['portfolio', 'deposit'];
+  document.querySelectorAll('#page-sekino .tab').forEach((t, i) => {
+    t.classList.remove('active');
+    if (names[i] === name) t.classList.add('active');
+  });
+  document.querySelectorAll('#page-sekino .tab-content').forEach(el => {
+    el.classList.toggle('active', el.id === 's-tab-' + name);
+  });
+  if (name === 'deposit') {
+    const total = loadSekinoHoldings();
+    let cur = 0;
+    SEKINO_SECTORS.forEach(s => {
+      const h = total[s];
+      if (h?.shares) cur += ((sekinoData?.prices||{})[s]||h.avg_price) * h.shares;
+    });
+    document.getElementById('s-rebal-total').textContent =
+      cur > 0 ? (cur/10000).toFixed(0) + '만원' : '보유 없음 (초기 매수)';
+  }
+}
+
+function clearSekinoAll() {
+  if (confirm('보유 정보와 매매 로그를 모두 초기화하시겠습니까?')) {
+    localStorage.removeItem(SEKINO_STORAGE);
+    localStorage.removeItem(SEKINO_TRADE_LOG_KEY);
+    if (sekinoData) renderSekinoStatus(sekinoData);
+    alert('초기화 완료');
+  }
+}
+
+// ============================================================
+// 초기화
+// ============================================================
+loadSignals();
+
+loadSekinoStatus();
+</script>
+</body>
+</html>
