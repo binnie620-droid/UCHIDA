@@ -632,8 +632,7 @@ function renderSignals(data) {
     now.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) +
     '<br>' + now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
   // 기준일: 마지막 거래일 + 업데이트 시간
-  document.getElementById('last-updated').textContent =
-    '기준: ' + data.date + ' · ' + (data.updated || '').slice(0, 16);
+  document.getElementById('last-updated').textContent = '업데이트: ' + (data.updated || data.date).slice(0, 16);
 
   // 국면 카드
   const color = REGIME_COLORS[data.regime] || '#5a5a7a';
