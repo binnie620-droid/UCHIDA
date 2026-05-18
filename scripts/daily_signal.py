@@ -133,7 +133,8 @@ def main():
     )
     cur_regime = str(regime_final.iloc[-1])
     cur_score  = float(score.iloc[-1])
-    latest     = features.index[-1]  # ← 추가
+    latest     = features.index[-1]
+    print(f"features 최신 날짜: {latest.date()}")
 
     # RSI + MA200 현재값
     cur_rsi     = float(features.loc[latest, "rsi_QQQ"]) if "rsi_QQQ" in features.columns else None
