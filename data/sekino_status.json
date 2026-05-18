@@ -1,6 +1,6 @@
 {
   "date": "2026-05-18",
-  "updated": "2026-05-18 02:16",
+  "updated": "2026-05-18 16:05",
   "uchida_phase": "ATTACK",
   "multiplier": 1.0,
   "weights": {
@@ -12,18 +12,28 @@
   "sector_events": [],
   "news": [
     {
+      "sector": "banking",
+      "title": "월가 채권왕 “올해 금리인하 사실상 불가능…4%대 CPI 보게될것”",
+      "magnitude": 4
+    },
+    {
+      "sector": "energy_chem",
+      "title": "주유소 기름값 2000원대 유지…정유업계 “최고가격제 부담 누적”",
+      "magnitude": 3
+    },
+    {
       "sector": "automotive",
       "title": "HD현대사이트솔루션, 알제리 정부와 370억 규모 지게차 공급계약",
       "magnitude": 3
     }
   ],
   "prices": {
-    "semiconductor": 46300.0,
-    "battery": 24350.0,
+    "semiconductor": 45615.0,
+    "battery": 24150.0,
     "energy_chem": 16775.0,
-    "biotech": 11225.0,
-    "banking": 15600.0,
-    "automotive": 38830.0,
-    "defense": 43935.0
+    "biotech": 10725.0,
+    "banking": 15350.0,
+    "automotive": 36875.0,
+    "defense": 44295.0
   }
 }
