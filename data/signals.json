@@ -1,19 +1,19 @@
 {
-  "date": "2026-05-15",
-  "updated": "2026-05-18 22:34",
-  "regime": "ATTACK",
+  "date": "2026-05-18",
+  "updated": "2026-05-19 09:56",
+  "regime": "CAUTION",
   "regime_base": "ATTACK",
   "score": 0.0,
   "caution": {
-    "active": false,
-    "rsi": 73.26,
+    "active": true,
+    "rsi": 76.14,
     "rsi_threshold": 75.0,
-    "ma_dist": 16.25,
+    "ma_dist": 15.61,
     "ma_threshold": 15.0
   },
   "signals": {
     "cpi_z": {
-      "value": 0.9023766114462767,
+      "value": 0.9013360892050374,
       "threshold": 1.5,
       "op": ">",
       "triggered": false,
@@ -27,21 +27,21 @@
       "label": "신용스프레드"
     },
     "t10y2y": {
-      "value": 0.5,
+      "value": 0.54,
       "threshold": 0.0,
       "op": "<",
       "triggered": false,
       "label": "10Y-2Y"
     },
     "vix": {
-      "value": 17.26,
+      "value": 18.43,
       "threshold": 22.0,
       "op": ">",
       "triggered": false,
       "label": "VIX"
     },
     "dist_ma200": {
-      "value": 0.16249487460544443,
+      "value": 0.15613840590608663,
       "threshold": -0.03,
       "op": "<",
       "triggered": false,
