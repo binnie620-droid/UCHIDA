@@ -8,6 +8,8 @@ on:
 jobs:
   daily:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_RUNNER_DEBUG: true
     permissions:
       contents: write          # signals.json commit 권한
 
