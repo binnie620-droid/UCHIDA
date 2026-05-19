@@ -1,6 +1,6 @@
 {
   "date": "2026-05-18",
-  "updated": "2026-05-19 20:41",
+  "updated": "2026-05-20 03:02",
   "regime": "CAUTION",
   "regime_base": "ATTACK",
   "score": 0.0,
@@ -34,14 +34,14 @@
       "label": "10Y-2Y"
     },
     "vix": {
-      "value": 18.43,
+      "value": 17.82,
       "threshold": 22.0,
       "op": ">",
       "triggered": false,
       "label": "VIX"
     },
     "dist_ma200": {
-      "value": 0.1561384076397314,
+      "value": 0.15613840590608663,
       "threshold": -0.03,
       "op": "<",
       "triggered": false,
@@ -49,10 +49,10 @@
     }
   },
   "prices": {
-    "QQQ": 192740.0,
-    "SCHD": 15315.0,
-    "GLD": 30300.0,
-    "IEF": 13420.0,
-    "SOFR": 64655.0
+    "QQQ": 192025.0,
+    "SCHD": 15030.0,
+    "GLD": 30295.0,
+    "IEF": 13360.0,
+    "SOFR": 64355.0
   }
 }
