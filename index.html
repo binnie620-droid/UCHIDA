@@ -445,9 +445,6 @@
     </div>
     <div class="date-info" id="date-info">—</div>
   </div>
-  <div style="margin-bottom:16px">
-    <a href="sekino.html" style="display:block;text-align:center;padding:10px;background:rgba(224,64,251,0.1);border:1px solid rgba(224,64,251,0.3);border-radius:10px;color:#e040fb;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.1em;text-decoration:none;">SEKINO 섹터 로테이션 →</a>
-  </div>
 
   <!-- 알림 배너 -->
   <div class="alert alert-danger" id="alert-regime">
@@ -569,7 +566,8 @@ const NAMES  = {
   SOFR: 'TIGER 달러SOFR금리액티브 (456610)',
 };
 const WEIGHT_MAP = {
-  ATTACK:  { QQQ: 0.75, SCHD: 0.15, GLD: 0.05, IEF: 0.05, SOFR: 0.0 },
+  ATTACK:  { QQQ: 0.75, SCHD: 0.15, GLD: 0.05, IEF: 0.05, SOFR: 0.0  },
+  CAUTION: { QQQ: 0.50, SCHD: 0.18, GLD: 0.12, IEF: 0.15, SOFR: 0.05 },
   DEFENSE: { QQQ: 0.25, SCHD: 0.20, GLD: 0.20, IEF: 0.25, SOFR: 0.10 },
   CRISIS:  { QQQ: 0.0,  SCHD: 0.20, GLD: 0.30, IEF: 0.25, SOFR: 0.25 },
 };
