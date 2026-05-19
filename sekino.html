@@ -545,6 +545,13 @@ async function loadSekinoStatus() {
   try {
     const res = await fetch(SEKINO_STATUS_URL + '?t=' + Date.now());
     sekinoData = await res.json();
+    // signals.json에서 최신 UCHIDA 국면 덮어쓰기 (캐시 우회)
+    try {
+      const sigRes = await fetch('data/signals.json?t=' + Date.now());
+      const sigData = await sigRes.json();
+      sekinoData.uchida_phase = sigData.regime;
+      sekinoData.multiplier = { ATTACK: 1.0, CAUTION: 0.67, DEFENSE: 0.33, CRISIS: 0.0 }[sigData.regime] ?? 1.0;
+    } catch (_) {}
   } catch (e) {
     sekinoData = {
       date: new Date().toISOString().slice(0, 10),
