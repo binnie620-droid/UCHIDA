@@ -1,45 +1,23 @@
 {
-  "date": "2026-05-19",
-  "updated": "2026-05-19 08:30",
-  "uchida_phase": "ATTACK",
-  "multiplier": 1.0,
+  "date": "2026-05-20",
+  "updated": "2026-05-20 03:07",
+  "uchida_phase": "CAUTION",
+  "multiplier": 0.67,
   "weights": {
-    "battery": 0.5,
-    "semiconductor": 0.5
+    "battery": 0.335,
+    "semiconductor": 0.335
   },
-  "cash": 0.0,
+  "cash": 0.33,
   "war_event": false,
-  "sector_events": [
-    {
-      "sector": "banking",
-      "direction": -1,
-      "reason": "미 국채금리 5% 돌파로 금융시장 불안 확대"
-    },
-    {
-      "sector": "automotive",
-      "direction": -1,
-      "reason": "중국 업체들의 유럽 시장 공격적 진출로 경쟁 심화"
-    }
-  ],
-  "news": [
-    {
-      "sector": "banking",
-      "title": "금융위기 수준까지 뛴 美 국채 금리… “증시 최대 복병 떠올라”",
-      "magnitude": 4
-    },
-    {
-      "sector": "automotive",
-      "title": "유럽 車공장 쇼핑 나서는 中업체들",
-      "magnitude": 4
-    }
-  ],
+  "sector_events": [],
+  "news": [],
   "prices": {
-    "semiconductor": 45615.0,
-    "battery": 24150.0,
-    "energy_chem": 16775.0,
-    "biotech": 10725.0,
-    "banking": 15350.0,
-    "automotive": 36875.0,
-    "defense": 44295.0
+    "semiconductor": 43560.0,
+    "battery": 23010.0,
+    "energy_chem": 16170.0,
+    "biotech": 10645.0,
+    "banking": 15365.0,
+    "automotive": 34380.0,
+    "defense": 44090.0
   }
 }
