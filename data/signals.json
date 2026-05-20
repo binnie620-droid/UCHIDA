@@ -1,26 +1,26 @@
 {
-  "date": "2026-05-18",
-  "updated": "2026-05-20 03:02",
-  "regime": "CAUTION",
+  "date": "2026-05-19",
+  "updated": "2026-05-20 10:56",
+  "regime": "ATTACK",
   "regime_base": "ATTACK",
   "score": 0.0,
   "caution": {
-    "active": true,
-    "rsi": 76.14,
+    "active": false,
+    "rsi": 71.53,
     "rsi_threshold": 75.0,
-    "ma_dist": 15.61,
+    "ma_dist": 14.76,
     "ma_threshold": 15.0
   },
   "signals": {
     "cpi_z": {
-      "value": 0.9013360892050374,
+      "value": 0.9007220417766411,
       "threshold": 1.5,
       "op": ">",
       "triggered": false,
       "label": "CPI Z-score"
     },
     "credit_spread": {
-      "value": 1.62,
+      "value": 1.59,
       "threshold": 3.5,
       "op": ">",
       "triggered": false,
@@ -41,7 +41,7 @@
       "label": "VIX"
     },
     "dist_ma200": {
-      "value": 0.15613840590608663,
+      "value": 0.14760682738252484,
       "threshold": -0.03,
       "op": "<",
       "triggered": false,
@@ -49,10 +49,10 @@
     }
   },
   "prices": {
-    "QQQ": 192025.0,
-    "SCHD": 15030.0,
-    "GLD": 30295.0,
-    "IEF": 13360.0,
-    "SOFR": 64355.0
+    "QQQ": 192740.0,
+    "SCHD": 15315.0,
+    "GLD": 30300.0,
+    "IEF": 13420.0,
+    "SOFR": 64655.0
   }
 }
