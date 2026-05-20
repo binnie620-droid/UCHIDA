@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '30 23 * * 0-4'   # UTC 23:30 = KST 08:30 (월~금)
   workflow_dispatch:
+  push:
+    branches: [ main ]       # ← 이 줄 추가
 
 jobs:
   daily:
